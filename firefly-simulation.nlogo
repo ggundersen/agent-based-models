@@ -1,12 +1,54 @@
 to setup
-  clear-all ;;clear all variables from memory
-  create-turtles number ;;"turtles" are what we use to represent our fireflies
+  clear-all ; clear all variables from memory
+  create-turtles number ; "turtles" are what we use to represent our fireflies
   [
-    setxy random-xcor random-ycor ;;put in turtles in random locations
+    setxy random-xcor random-ycor ; put in turtles in random locations
+    set clock random (round cycle-length) ; initialize each turtle at a separate clock cycle
     set size 2
+    set threshold flash-length
   ]
-  Reset-ticks ;;reset the clock
+  Reset-ticks ; reset the system clock
 End
+
+to go
+  ask turtles [
+    move
+    increment-clock
+    recolor
+  ]
+  tick ; increment the system clock every time go is called
+end
+
+turtles-own
+[
+  clock ; each fireflies clock
+  threshold ; the clock tick at which a firefly stops its flash
+]
+
+; turtle procedures
+; -----------------
+to move
+  right random-float 90 - random-float 90
+  forward 1
+end
+
+to increment-clock
+  set clock (clock + 1)
+  if clock = cycle-length [
+    set clock 0
+  ]
+end
+
+to recolor
+  ifelse (clock < threshold)
+  [ show-turtle
+    set color yellow ]
+  [ set color gray - 2
+    ifelse show-dark-fireflies?
+      [ show-turtle ]
+      [ hide-turtle ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 350
@@ -40,7 +82,7 @@ BUTTON
 28
 88
 61
-NIL
+Setup
 setup
 NIL
 1
@@ -61,11 +103,69 @@ number
 number
 0
 2000
-408
+166
 1
 1
 NIL
 HORIZONTAL
+
+SLIDER
+43
+169
+215
+202
+cycle-length
+cycle-length
+0
+10
+50
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+125
+35
+188
+68
+Go
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+67
+245
+239
+278
+flash-length
+flash-length
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+51
+339
+233
+372
+show-dark-fireflies?
+show-dark-fireflies?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
