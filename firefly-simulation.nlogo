@@ -14,7 +14,11 @@ to go
   ask turtles [
     move
     increment-clock
-    recolor
+    if (clock >= threshold)
+      [ look ]
+  ]
+  ask turtles [
+    recolor 
   ]
   tick ; increment the system clock every time go is called
 end
@@ -34,9 +38,8 @@ end
 
 to increment-clock
   set clock (clock + 1)
-  if clock = cycle-length [
-    set clock 0
-  ]
+  if clock = cycle-length
+    [ set clock 0 ]
 end
 
 to recolor
@@ -45,9 +48,14 @@ to recolor
     set color yellow ]
   [ set color gray - 2
     ifelse show-dark-fireflies?
-      [ show-turtle ]
-      [ hide-turtle ]
-  ]
+    [ show-turtle ]
+    [ hide-turtle ] ]
+end
+
+; flashes-to-reset is the number of neighboring fireflies required to reset the existing firefly's internal clock
+to look
+if count turtles in-radius 1 with [color = yellow] >= flashes-to-reset
+  [set clock threshold]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -103,7 +111,7 @@ number
 number
 0
 2000
-166
+943
 1
 1
 NIL
@@ -116,9 +124,9 @@ SLIDER
 202
 cycle-length
 cycle-length
-0
-10
-50
+5
+100
+21
 1
 1
 NIL
@@ -149,8 +157,8 @@ SLIDER
 flash-length
 flash-length
 0
-100
-50
+10
+6
 1
 1
 NIL
@@ -166,6 +174,21 @@ show-dark-fireflies?
 0
 1
 -1000
+
+SLIDER
+65
+420
+237
+453
+flashes-to-reset
+flashes-to-reset
+1
+3
+1
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
